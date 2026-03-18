@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Study Hard, My Queen! 👸</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --primary-pink: #ff4d6d;
+            --soft-pink: #fff0f3;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--soft-pink);
+            color: #590d22;
+            padding: 20px;
+            overflow-x: hidden;
+            text-align: center;
+            min-height: 100vh;
+        }
+        .heart, .floating-word {
+            position: fixed; 
+            font-size: 20px;
+            animation: floatUp 6s linear infinite;
+            z-index: 0; 
+            pointer-events: none;
+        }
+        .floating-word {
+            font-weight: bold;
+            color: var(--primary-pink);
+            font-size: 16px;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes pulse { 
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        header { 
+            margin-bottom: 25px; 
+            position: relative; 
+            z-index: 1;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        h1 { 
+            font-size: 2rem; 
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff4d6d, #ff85a1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .quote { 
+            font-style: italic; 
+            font-size: 1rem; 
+            color: #c9184a; 
+            padding: 0 10px;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        .progress-wrap {
+            max-width: 600px; 
+            margin: 0 auto 22px;
+            background: white; 
+            border-radius: 20px; 
+            padding: 15px 20px;
+            box-shadow: 0 4px 15px rgba(255,77,109,0.15); 
+            position: relative; 
+            z-index: 1;
+            transition: transform 0.3s;
+        }
+        .progress-wrap:hover { transform: translateY(-5px); }
+        .progress-bar-bg { 
+            background: #fce4ec; 
+            border-radius: 10px; 
+            height: 18px; 
+            overflow: hidden; 
+            margin-top: 10px; 
+        }
+        .progress-bar-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg,#ff4d6d,#ff85a1); 
+            border-radius: 10px; 
+            transition: width 0.5s;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+        .progress-text { 
+            font-size: 0.85rem; 
+            color: #c9184a; 
+            margin-top: 6px; 
+        }
+        .legend { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            flex-wrap: wrap; 
+            margin-bottom: 18px; 
+            font-size: 0.8rem; 
+            position: relative; 
+            z-index: 1;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: white;
+            border: 2px solid #ffd6e0;
+            color: #ff4d6d;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: linear-gradient(45deg, #ff4d6d, #ff85a1);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255,77,109,0.4);
+        }
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(255,77,109,0.2);
+        }
+        .calendar-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
+            gap: 12px; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            position: relative; 
+            z-index: 1;
+        }
+        .day-card {
+            background: white; 
+            padding: 12px 10px; 
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(255,77,109,0.1); 
+            border: 2px solid #ffd6e0; 
+            transition: all 0.3s;
+        }
+        .day-card:hover { 
+            transform: scale(1.04);
+            box-shadow: 0 6px 15px rgba(255,77,109,0.2);
+        }
+        .day-card.today { 
+            border-color: #ff4d6d; 
+            box-shadow: 0 0 12px rgba(255,77,109,0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .date-label { 
+            font-weight: bold; 
+            font-size: 0.95rem; 
+            margin-bottom: 4px; 
+            display: block; 
+        }
+        .day-name { 
+            font-size: 0.7rem; 
+            color: #c9184a; 
+            margin-bottom: 4px; 
+            display: block; 
+        }
+        .btn-group { 
+            display: flex; 
+            justify-content: space-around; 
+            margin-top: 8px; 
+            gap: 4px; 
+        }
+        .status-btn {
+            border: none; 
+            background: #f5f5f5; 
+            border-radius: 50%;
+            width: 34px; 
+            height: 34px; 
+            cursor: pointer; 
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .status-btn:active { 
+            transform: scale(0.85);
+            background: #ffe0e8;
+        }
+        .status-btn:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 8px rgba(255,77,109,0.4));
+        }
+        .love-note { 
+            margin-top: 7px; 
+            font-size: 0.72rem; 
+            color: #ff4d6d;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+        .day-card.satisfied     { border-color: #4ade80; background: #f0fdf4; }
+        .day-card.not-satisfied { border-color: #f87171; background: #fef2f2; }
+        .day-card.better        { border-color: #fbbf24; background: #fffbeb; }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .flashcard {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 20px rgba(255,77,109,0.2);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            perspective: 1000px;
+            transition: transform 0.3s;
+        }
+        .flashcard:hover {
+            transform: scale(1.02);
+        }
+        .flashcard-content {
+            font-size: 1.3rem;
+            color: #590d22;
+            font-weight: 500;
+            line-height: 1.6;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .nav-btn {
+            background: linear-gradient(45deg, #ff4d6d, #ff85a1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(255,77,109,0.4);
+        }
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+        .card-counter {
+            font-size: 1rem;
+            color: #c9184a;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        /* Achievement Badges */
+        .badges-container {
+            max-width: 600px;
+            margin: 20px auto;
+            position: relative;
+            z-index: 1;
+        }
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+        }
+        .badge {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(255,77,109,0.1);
+            border: 2px solid #ffd6e0;
+            transition: all 0.3s;
+        }
+        .badge.unlocked {
+            background: linear-gradient(135deg, #fff0f3, #ffe0e8);
+            border-color: #ff4d6d;
+            box-shadow: 0 4px 15px rgba(255,77,109,0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .badge.locked {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+        .badge-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        .badge-name {
+            font-size: 0.75rem;
+            color: #590d22;
+            font-weight: bold;
+        }
+        .badge-desc {
+            font-size: 0.6rem;
+            color: #c9184a;
+            margin-top: 5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #fff0f3, white);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(255,77,109,0.3);
+            animation: slideDown 0.3s;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-btn {
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff4d6d;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        .close-btn:hover { color: #c9184a; }
+        .modal h2 {
+            color: #ff4d6d;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .modal p {
+            color: #590d22;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff4d6d;
+            z-index: 999;
+            pointer-events: none;
+            animation: confettiFall 3s ease-out forwards;
+        }
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotateZ(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hidden { display: none; }
+        footer { 
+            margin-top: 50px; 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            color: #c9184a; 
+            position: relative; 
+            z-index: 1; 
+            padding-bottom: 30px;
+            animation: bounce 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Study Hard, My Queen! 👸</h1>
+    <p class="quote">"I love you more than all the atoms in your biology textbook."</p>
+</header>
+
+<div class="progress-wrap">
+    <strong>📅 Days until May 3rd: <span id="daysLeft">--</span></strong>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progressText"></div>
+</div>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tracker')">📅 Tracker</button>
+    <button class="tab-btn" onclick="switchTab('flashcards')">📚 Flashcards</button>
+    <button class="tab-btn" onclick="switchTab('achievements')">🏆 Achievements</button>
+</div>
+
+<!-- Tracker Tab -->
+<div id="tracker-tab" class="tab-content">
+    <div class="legend">
+        <span>😊 Satisfied</span><span>😐 Could be better</span><span>😔 Not satisfied</span>
+    </div>
+    <div class="calendar-grid" id="calendar"></div>
+</div>
+
+<!-- Flashcards Tab -->
+<div id="flashcards-tab" class="tab-content hidden">
+    <div class="flashcard-container">
+        <div class="flashcard" id="flashcard" onclick="nextFlashcard()">
+            <div class="flashcard-content" id="flashcardContent">Loading...</div>
+        </div>
+        <div class="flashcard-nav">
+            <button class="nav-btn" onclick="prevFlashcard()">← Previous</button>
+            <button class="nav-btn" onclick="shuffleFlashcards()">🔀 Shuffle</button>
+            <button class="nav-btn" onclick="nextFlashcard()">Next →</button>
+        </div>
+        <div class="card-counter" id="cardCounter"></div>
+    </div>
+</div>
+
+<!-- Achievements Tab -->
+<div id="achievements-tab" class="tab-content hidden">
+    <div class="badges-container">
+        <h3 style="color: #ff4d6d; margin-bottom: 20px;">🌟 Your Achievements 🌟</h3>
+        <div class="badge-grid" id="badgesContainer"></div>
+    </div>
+</div>
+
+<footer>
+    <p>🎯 Target: May 3rd</p>
+    <p style="font-size:1rem;margin-top:8px;">You're going to be an amazing doctor! ❤️</p>
+</footer>
+
+<!-- Daily Motivation Modal -->
+<div id="motivationModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <h2>💕 Daily Motivation 💕</h2>
+        <p id="motivationText"></p>
+    </div>
+</div>
+
+<script>
+    // ============ SOUND EFFECTS ============
+    function playSound(type) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        if (type === 'success') {
+            oscillator.frequency.value = 800;
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } else if (type === 'badge') {
+            oscillator.frequency.value = 1200;
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        } else if (type === 'click') {
+            oscillator.frequency.value = 600;
+            gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+    }
+
+    // ============ CONFETTI ANIMATION ============
+    function createConfetti() {
+        const colors = ['#ff4d6d', '#ff85a1', '#ffc2d1', '#ffd6e0'];
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.top = '0px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.width = (Math.random() * 10 + 5) + 'px';
+            confetti.style.height = confetti.style.width;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    }
+
+    // ============ FLOATING WORDS ============
+    const FLOATING_WORDS = ['I believe in you baby', 'I Love you', 'My angel'];
+    const EMOJIS = ['❤️', '🌸', '💕', '💖', '✨', '🌷'];
+    
+    function createFloatingElement(isWord = false) {
+        const el = document.createElement('div');
+        el.className = isWord ? 'floating-word' : 'heart';
+        
+        if (isWord) {
+            el.textContent = FLOATING_WORDS[Math.floor(Math.random() * FLOATING_WORDS.length)];
+            el.style.fontSize = (14 + Math.random() * 10) + 'px';
+        } else {
+            el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+            el.style.fontSize = (14 + Math.random() * 14) + 'px';
+        }
+        
+        el.style.left = (Math.random() * 100) + 'vw';
+        el.style.animationDuration = (4 + Math.random() * 4) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 8000);
+    }
+
+    setInterval(() => {
+        if (Math.random() > 0.5) createFloatingElement(true);
+        else createFloatingElement(false);
+    }, 800);
+
+    // ============ STORAGE FUNCTIONS ============
+    function save(k, v) {
+        try {
+            localStorage.setItem(k, v);
+        } catch(e) {
+            document.cookie = encodeURIComponent(k) + '=' + v + ';path=/;max-age=31536000';
+        }
+    }
+    
+    function load(k) {
+        try {
+            const v = localStorage.getItem(k);
+            if (v !== null) return v;
+        } catch(e) {}
+        const m = document.cookie.split(';').find(c => c.trim().startsWith(encodeURIComponent(k) + '='));
+        return m ? m.split('=')[1] : '';
+    }
+
+    // ============ TRACKER LOGIC ============
+    const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const startDate = new Date(2026, 2, 19);
+    const endDate = new Date(2026, 4, 3);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const total = Math.round((endDate - startDate) / 86400000);
+    const elapsed = Math.min(Math.max(Math.round((today - startDate) / 86400000), 0), total);
+    const daysLeft = Math.max(Math.round((endDate - today) / 86400000), 0);
+
+    document.getElementById('daysLeft').textContent = daysLeft;
+    document.getElementById('progressFill').style.width = ((elapsed / total) * 100).toFixed(1) + '%';
+    document.getElementById('progressText').textContent = elapsed + ' of ' + total + ' days done (' + ((elapsed / total) * 100).toFixed(0) + '%)';
+
+    const calEl = document.getElementById('calendar');
+    let cur = new Date(startDate);
+    
+    while (cur <= endDate) {
+        const k = cur.getFullYear() + '-' + cur.getMonth() + '-' + cur.getDate();
+        const st = load(k) || '';
+        const isT = cur.getTime() === today.getTime();
+        
+        const card = document.createElement('div');
+        card.className = 'day-card' + (st ? ' ' + st : '') + (isT ? ' today' : '');
+        card.id = 'card-' + k;
+        card.innerHTML =
+            '<span class="day-name">' + DAYS[cur.getDay()] + (isT ? ' 📍' : '') + '</span>' +
+            '<span class="date-label">' + cur.getDate() + ' ' + MONTHS[cur.getMonth()] + '</span>' +
+            '<div class="btn-group">' +
+            '<button class="status-btn" onclick="setStatus(\'' + k + '\',\'satisfied\')">😊</button>' +
+            '<button class="status-btn" onclick="setStatus(\'' + k + '\',\'better\')">😐</button>' +
+            '<button class="status-btn" onclick="setStatus(\'' + k + '\',\'not-satisfied\')">😔</button>' +
+            '</div>' +
+            '<div class="love-note">I love you! 💕</div>';
+        calEl.appendChild(card);
+        cur.setDate(cur.getDate() + 1);
+    }
+
+    function setStatus(k, st) {
+        save(k, st);
+        const card = document.getElementById('card-' + k);
+        card.className = card.className.replace(/\b(satisfied|better|not-satisfied)\b/g, '').trim() + ' ' + st;
+        playSound('success');
+        createConfetti();
+        checkAchievements();
+    }
+
+    setTimeout(() => {
+        const t = document.querySelector('.today');
+        if (t) t.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }, 400);
+
+    // ============ FLASHCARDS ============
+    const flashcards = [
+        // Motivational Quotes
+        "The only way to do great work is to love what you do. Remember, I love you! ❤️",
+        "Success is not final, failure is not fatal. Keep pushing, My angel! 💕",
+        "Believe in yourself, because I believe in you baby! 🌟",
+        "Every expert was once a beginner. You'll be amazing! Remember I love you! 💖",
+        "The best time to plant a tree was 20 years ago. The second best is now. I love you! 🌸",
+        
+        // Biology NEET Questions
+        "Q: What is the basic unit of life? A: Cell - Remember I love you! 💕",
+        "Q: Which organelle is responsible for photosynthesis? A: Chloroplast - Remember I love you! 🌿",
+        "Q: What is the process by which plants make their own food? A: Photosynthesis - Remember I love you! 🌱",
+        "Q: Define mitosis and its importance. A: Cell division for growth and repair - Remember I love you! ✨",
+        "Q: What is the genetic material in cells? A: DNA (Deoxyribonucleic Acid) - Remember I love you! 🧬",
+        "Q: What are the four bases in DNA? A: Adenine, Thymine, Guanine, Cytosine - Remember I love you! 🔬",
+        
+        // Physics NEET Questions
+        "Q: Define velocity. A: Rate of change of displacement - Remember I love you! ⚡",
+        "Q: What is Newton's First Law of Motion? A: An object in motion stays in motion unless acted upon - Remember I love you! 🚀",
+        "Q: What is acceleration? A: Rate of change of velocity - Remember I love you! 💫",
+        "Q: Define power in physics. A: Energy transferred per unit time - Remember I love you! ⚡",
+        "Q: What is the SI unit of force? A: Newton (N) - Remember I love you! 💪",
+        
+        // Chemistry NEET Questions
+        "Q: What is the atomic number? A: Number of protons in an atom - Remember I love you! ⚛️",
+        "Q: Define molarity. A: Moles of solute per liter of solution - Remember I love you! 🧪",
+        "Q: What is a valence electron? A: Electron in the outermost shell - Remember I love you! 🔮",
+        "Q: What is the law of conservation of mass? A: Mass cannot be created or destroyed - Remember I love you! ⚖️",
+        "Q: Define redox reaction. A: Reactions involving electron transfer - Remember I love you! 🔥",
+        
+        // Trivia
+        "Did you know? Honey never spoils and can last forever! You're eternal in my heart! 💕",
+        "Fun fact: Your brain uses 20% of your body's energy! Study smart! Remember I love you! 🧠",
+        "Trivia: The human body has 206 bones as an adult! You're strong inside and out! 💪",
+        "Did you know? Light travels at 299,792 km/s! You're just as fast! Remember I love you! 💡",
+        "Trivia: Water is the only substance that exists in all three states naturally! Like you - solid in beliefs! 💧"
+    ];
+
+    let currentCardIndex = 0;
+    let shuffledCards = [...flashcards];
+
+    function displayFlashcard() {
+        document.getElementById('flashcardContent').textContent = shuffledCards[currentCardIndex];
+        document.getElementById('cardCounter').textContent = `Card ${currentCardIndex + 1} of ${shuffledCards.length}`;
+    }
+
+    function nextFlashcard() {
+        currentCardIndex = (currentCardIndex + 1) % shuffledCards.length;
+        playSound('click');
+        displayFlashcard();
+    }
+
+    function prevFlashcard() {
+        currentCardIndex = (currentCardIndex - 1 + shuffledCards.length) % shuffledCards.length;
+        playSound('click');
+        displayFlashcard();
+    }
+
+    function shuffleFlashcards() {
+        shuffledCards = [...flashcards].sort(() => Math.random() - 0.5);
+        currentCardIndex = 0;
+        playSound('click');
+        displayFlashcard();
+    }
+
+    displayFlashcard();
+
+    // ============ ACHIEVEMENTS ============
+    const achievements = [
+        { id: 1, name: '🌟 First Step', emoji: '🌟', condition: () => elapsed >= 1, desc: '1 day done' },
+        { id: 2, name: '🔥 On Fire', emoji: '🔥', condition: () => {
+            let streak = 0;
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const k = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+                if (load(k)) streak++; else break;
+            }
+            return streak >= 7;
+        }, desc: '7-day streak' },
+        { id: 3, name: '💪 Unstoppable', emoji: '💪', condition: () => elapsed >= 14, desc: '2 weeks done' },
+        { id: 4, name: '👑 Royalty', emoji: '👑', condition: () => elapsed >= 30, desc: '30 days done' },
+        { id: 5, name: '🎓 Scholar', emoji: '🎓', condition: () => {
+            let satisfied = 0;
+            for (let i = 0; i < elapsed; i++) {
+                const d = new Date(startDate);
+                d.setDate(d.getDate() + i);
+                const k = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+                if (load(k) === 'satisfied') satisfied++;
+            }
+            return satisfied >= 10;
+        }, desc: '10 satisfied days' },
+        { id: 6, name: '💎 Diamond', emoji: '💎', condition: () => elapsed >= 45, desc: 'Almost there!' }
+    ];
+
+    function checkAchievements() {
+        const previousUnlocked = JSON.parse(load('unlockedBadges') || '[]');
+        const newlyUnlocked = [];
+
+        achievements.forEach(badge => {
+            if (badge.condition() && !previousUnlocked.includes(badge.id)) {
+                newlyUnlocked.push(badge.id);
+                playSound('badge');
+                createConfetti();
+                showBadgeNotification(badge);
+            }
+        });
+
+        if (newlyUnlocked.length > 0) {
+            save('unlockedBadges', JSON.stringify([...previousUnlocked, ...newlyUnlocked]));
+        }
+
+        renderAchievements();
+    }
+
+    function showBadgeNotification(badge) {
+        const modal = document.getElementById('motivationModal');
+        document.getElementById('motivationText').innerHTML = `
+            <div style="font-size: 3rem; margin: 20px 0;">${badge.emoji}</div>
+            <p style="font-size: 1.3rem; font-weight: bold;">You unlocked: ${badge.name}!</p>
+            <p style="margin-top: 10px;">${badge.desc}</p>
+            <p style="margin-top: 15px; font-size: 1.1rem;">I'm so proud of you! Remember I love you! 💕</p>
+        `;
+        modal.style.display = 'block';
+    }
+
+    function renderAchievements() {
+        const container = document.getElementById('badgesContainer');
+        const unlockedBadges = JSON.parse(load('unlockedBadges') || '[]');
+        
+        container.innerHTML = '';
+        achievements.forEach(badge => {
+            const div = document.createElement('div');
+            div.className = 'badge ' + (unlockedBadges.includes(badge.id) ? 'unlocked' : 'locked');
+            div.innerHTML = `
+                <div class="badge-emoji">${badge.emoji}</div>
+                <div class="badge-name">${badge.name}</div>
+                <div class="badge-desc">${badge.desc}</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // ============ DAILY MOTIVATION ============
+    const dailyMotivations = [
+        "You have the potential to achieve greatness! I believe in you baby! 💕",
+        "Every study session brings you closer to your dreams! Remember I love you! 🌟",
+        "Your dedication inspires me! Keep going, My angel! 💖",
+        "You're stronger than you think! I love you! 🦁",
+        "Today is a new opportunity to excel! Remember I love you! 🌅",
+        "Your hard work will pay off! I'm so proud of you! 👑",
+        "You're capable of amazing things! I believe in you baby! ✨"
+    ];
+
+    function showDailyMotivation() {
+        const lastShown = load('lastMotivationDate');
+        const todayStr = today.toDateString();
+        
+        if (lastShown !== todayStr) {
+            const motivation = dailyMotivations[Math.floor(Math.random() * dailyMotivations.length)];
+            document.getElementById('motivationText').innerHTML = `
+                <p style="font-size: 1.2rem; line-height: 1.8;">${motivation}</p>
+                <p style="margin-top: 20px; font-weight: bold; color: #ff4d6d;">🌸 Have a productive day! 🌸</p>
+            `;
+            document.getElementById('motivationModal').style.display = 'block';
+            save('lastMotivationDate', todayStr);
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('motivationModal').style.display = 'none';
+    }
+
+    // ============ TAB SWITCHING ============
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+        document.getElementById(tabName + '-tab').classList.remove('hidden');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        playSound('click');
+    }
+
+    // ============ INITIALIZATION ============
+    checkAchievements();
+    renderAchievements();
+    setTimeout(showDailyMotivation, 1000);
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('motivationModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>
